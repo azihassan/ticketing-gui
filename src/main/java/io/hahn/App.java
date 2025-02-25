@@ -1,5 +1,7 @@
 package io.hahn;
 
+import com.formdev.flatlaf.FlatLightLaf;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -79,6 +81,7 @@ public class App extends JFrame {
 
 
     public static void main(String[] args) {
+        FlatLightLaf.setup();
         ApiClient apiClient = new ApiClient(); // Initialize your API client
         SwingUtilities.invokeLater(() -> new App(apiClient).setVisible(true));
     }
