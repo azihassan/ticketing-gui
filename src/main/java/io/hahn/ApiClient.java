@@ -8,6 +8,8 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ApiClient {
 
@@ -50,10 +52,20 @@ public class ApiClient {
     }
 
     public TicketPage getTickets(String status, Long id) throws Exception {
-      // Build the request with query parameters (status, id) and the authToken
-      // ... (use UriBuilder for query parameters)
+        List<String> queryString = new ArrayList<>();
+        queryString.add("sort=id,desc");
+        if (status != null && !status.isEmpty()) {
+            queryString.add("status=" + status);
+        }
+        if (id != null) {
+            queryString.add("id=" + id);
+        }
+
+        var uri = "http://localhost:8080/tickets";
+        uri += "?" + String.join("&", queryString);
+
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/tickets")) // Replace with your URL
+                .uri(URI.create(uri)) // Replace with your URL
                 .header("Content-Type", "application/json")
                 .header("Cookie", rememberMeToken)
                 .GET()
@@ -122,7 +134,7 @@ public class ApiClient {
 
     public CommentPage getCommentsByTicketId(Long id) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/tickets/" + id + "/comments")) // Replace with your URL
+                .uri(URI.create("http://localhost:8080/tickets/" + id + "/comments?sort=id,desc")) // Replace with your URL
                 .header("Content-Type", "application/json")
                 .header("Cookie", rememberMeToken)
                 .GET()

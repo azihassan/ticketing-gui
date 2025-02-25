@@ -1,10 +1,11 @@
 package io.hahn;
 
-import io.hahn.dto.*;
+import io.hahn.dto.Ticket;
+import io.hahn.dto.TicketPage;
+import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
@@ -13,19 +14,17 @@ public class TicketListPanel extends JPanel {
 
     private final JTable ticketTable;
     private final DefaultTableModel tableModel;
-    private final JButton createTicketButton;
-    private final JDialog createTicketDialog;
-    private final JTextField titleField;
-    private final JTextArea descriptionArea;
-    private final JComboBox<String> priorityComboBox;
-    private final JComboBox<String> categoryComboBox;
+    private final TicketCreationDialog createTicketDialog;
     private final ApiClient apiClient;
+
 
     public TicketListPanel(ApiClient apiClient) {
         this.apiClient = apiClient;
-        setLayout(new BorderLayout());
+        setLayout(new MigLayout());
 
-        // Create the table model
+        JPanel searchPanel = new SearchPanel(this::loadTickets);
+        add(searchPanel, "grow, wrap");
+
         tableModel = new DefaultTableModel(new Object[]{"ID", "Title", "Priority", "Status", "Created At"}, 0);
         ticketTable = new JTable(tableModel) {
             @Override
@@ -34,83 +33,19 @@ public class TicketListPanel extends JPanel {
             }
         };
 
-        // Set up the table (e.g., column widths, row height)
-        ticketTable.getColumnModel().getColumn(0).setPreferredWidth(50); // ID
-        ticketTable.getColumnModel().getColumn(1).setPreferredWidth(200); // Title
-        // ... set widths for other columns
+        //ticketTable.getColumnModel().getColumn(0).setPreferredWidth(50); // ID
+        //ticketTable.getColumnModel().getColumn(1).setPreferredWidth(200); // Title
 
-        // Add the table to a scroll pane
         JScrollPane scrollPane = new JScrollPane(ticketTable);
-        add(scrollPane, BorderLayout.CENTER);
+        add(scrollPane, "grow, wrap");
 
-        // Load the tickets (in a separate thread)
         loadTickets();
 
-        // Create the "Create Ticket" button
-        createTicketButton = new JButton("Create New Ticket");
+        JButton createTicketButton = new JButton("Create New Ticket");
         createTicketButton.addActionListener(e -> showCreateTicketDialog());
+        add(createTicketButton, "wrap");
 
-        // Add the button to a panel (e.g., at the bottom)
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // Align to right
-        buttonPanel.add(createTicketButton);
-        add(buttonPanel, BorderLayout.SOUTH);
-
-        // Create the "Create Ticket" dialog (but don't show it yet)
-        createTicketDialog = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this), "Create Ticket", true); // Modal
-        createTicketDialog.setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);
-        gbc.anchor = GridBagConstraints.WEST; // Align labels to the left
-
-        // ... (Add form fields to the dialog - Title, Description, Priority, Category)
-        JLabel titleLabel = new JLabel("Title:");
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        createTicketDialog.add(titleLabel, gbc);
-
-        titleField = new JTextField(30);
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        createTicketDialog.add(titleField, gbc);
-
-        JLabel descriptionLabel = new JLabel("Description:");
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        createTicketDialog.add(descriptionLabel, gbc);
-
-        descriptionArea = new JTextArea(5, 30); // 5 rows, 30 columns
-        JScrollPane descriptionScrollPane = new JScrollPane(descriptionArea);
-        gbc.gridx = 1;
-        gbc.gridy = 1;
-        createTicketDialog.add(descriptionScrollPane, gbc);
-
-        JLabel priorityLabel = new JLabel("Priority:");
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        createTicketDialog.add(priorityLabel, gbc);
-
-        priorityComboBox = new JComboBox<>(new String[]{"LOW", "MEDIUM", "HIGH"});
-        gbc.gridx = 1;
-        gbc.gridy = 2;
-        createTicketDialog.add(priorityComboBox, gbc);
-
-        JLabel categoryLabel = new JLabel("Category:");
-        gbc.gridx = 0;
-        gbc.gridy = 3;
-        createTicketDialog.add(categoryLabel, gbc);
-
-        categoryComboBox = new JComboBox<>(new String[]{"NETWORK", "HARDWARE", "SOFTWARE", "OTHER"});
-        gbc.gridx = 1;
-        gbc.gridy = 3;
-        createTicketDialog.add(categoryComboBox, gbc);
-
-
-        // ... (Add "Create" and "Cancel" buttons to the dialog)
-        JButton createButton = new JButton("Create");
-        createButton.addActionListener(e -> createTicket());
-
-        JButton cancelButton = new JButton("Cancel");
-        cancelButton.addActionListener(e -> createTicketDialog.setVisible(false));
+        createTicketDialog = new TicketCreationDialog(apiClient, this::loadTickets, (JFrame) SwingUtilities.getWindowAncestor(this), "Create Ticket", true);
 
         ticketTable.addMouseListener(new MouseAdapter() {
             @Override
@@ -136,24 +71,16 @@ public class TicketListPanel extends JPanel {
                 }
             }
         });
-
-        JPanel dialogButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        dialogButtonPanel.add(createButton);
-        dialogButtonPanel.add(cancelButton);
-
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-        gbc.gridwidth = 2; // Span two columns
-        createTicketDialog.add(dialogButtonPanel, gbc);
-
-        createTicketDialog.pack();
-        createTicketDialog.setLocationRelativeTo(null); // Center the dialog
     }
 
     public void loadTickets() {
+        loadTickets(null, null);
+    }
+
+    public void loadTickets(Long id, String status) {
         new Thread(() -> {
             try {
-                TicketPage ticketPage = apiClient.getTickets(null, null); // Get all tickets (no filters initially)
+                TicketPage ticketPage = apiClient.getTickets(status, id); // Get all tickets (no filters initially)
                 List<Ticket> tickets = ticketPage.getContent(); // Access the ticket content
 
                 // Update the table model on the EDT
@@ -177,12 +104,7 @@ public class TicketListPanel extends JPanel {
     }
 
     private void showCreateTicketDialog() {
-        // Reset the form fields before showing the dialog
-        titleField.setText("");
-        descriptionArea.setText("");
-        priorityComboBox.setSelectedIndex(0);
-        categoryComboBox.setSelectedIndex(0);
-
+        createTicketDialog.resetFields();
         createTicketDialog.setVisible(true);
     }
 
@@ -193,31 +115,5 @@ public class TicketListPanel extends JPanel {
         ticketDetailsFrame.pack();
         ticketDetailsFrame.setLocationRelativeTo(null);
         ticketDetailsFrame.setVisible(true);
-    }
-
-    private void createTicket() {
-        String title = titleField.getText();
-        String description = descriptionArea.getText();
-        String priority = (String) priorityComboBox.getSelectedItem();
-        String category = (String) categoryComboBox.getSelectedItem();
-
-        try {
-            TicketCreate ticketCreate = new TicketCreate();
-            ticketCreate.setTitle(title);
-            ticketCreate.setDescription(description);
-            ticketCreate.setPriority(Priority.fromValue(priority));
-            ticketCreate.setCategory(Category.fromValue(category));
-            ticketCreate.setStatus(Status.NEW); // Initial status
-
-            Ticket createdTicket = apiClient.createTicket(ticketCreate); // Call the API
-            createTicketDialog.setVisible(false); // Hide the dialog
-            loadTickets(); // Refresh the ticket list
-
-            JOptionPane.showMessageDialog(this, "Ticket created successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
-
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Error creating ticket: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            ex.printStackTrace();
-        }
     }
 }
