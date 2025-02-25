@@ -1,0 +1,24 @@
+name: Build
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: maven
+
+      - name: Build project
+        run: mvn clean package
+
+      - name: Generate JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: ticketing-gui-1.0-SNAPSHOT-jar-with-dependencies.jar
+          path: target/ticketing-gui-1.0-SNAPSHOT-jar-with-dependencies.jar
