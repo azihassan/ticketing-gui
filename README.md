@@ -1,5 +1,7 @@
 ## Ticketing GUI
 
+![Build status](https://github.com/azihassan/ticketing-gui/actions/workflows/build.yml/badge.svg "Build status")
+
 ### Installation
 
 You can build the project from source by following these steps:
@@ -11,7 +13,8 @@ You can build the project from source by following these steps:
 
 Alternatively, you can download a prebuilt artifact from https://github.com/azihassan/ticketing-gui/actions (needs a Github account)
 
-A release will be published soon
+~~A release will be published soon~~ 
+Releases are now published in: https://github.com/azihassan/ticketing-gui/releases
 
 The project expects a REST API to be running on http://localhost:8080
 
