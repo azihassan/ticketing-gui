@@ -25,7 +25,9 @@ public class CommentAreaPanel extends JPanel {
         this.currentTicket = currentTicket;
         setLayout(new MigLayout());
 
-        add(new CommentFormPanel(apiClient, currentTicket, this::loadComments), "wrap, growx");
+        if(apiClient.getAccount().hasRole("IT")) {
+            add(new CommentFormPanel(apiClient, currentTicket, this::loadComments), "wrap, growx");
+        }
         commentListModel = new DefaultListModel<>();
         JList<Comment> commentList = new JList<>(commentListModel);
         CommentView commentView = new CommentView(apiClient, currentTicket);
@@ -41,9 +43,9 @@ public class CommentAreaPanel extends JPanel {
         });
         JScrollPane commentListScrollPane = new JScrollPane(commentList);
         commentListScrollPane.setPreferredSize(new Dimension(
-                commentListScrollPane.getWidth(), 200
+                520, 0
         ));
-        add(commentListScrollPane, "wrap, growx");
+        add(commentListScrollPane, "wrap, growx, height 200::");
 
         loadComments();
     }

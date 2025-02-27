@@ -1,6 +1,7 @@
 package io.hahn.ticket;
 
 import io.hahn.ApiClient;
+import io.hahn.account.dto.Role;
 import io.hahn.ticket.dto.Ticket;
 import io.hahn.ticket.dto.TicketPage;
 import net.miginfocom.swing.MigLayout;
@@ -44,7 +45,9 @@ public class TicketListPanel extends JPanel {
 
         JButton createTicketButton = new JButton("Create New Ticket");
         createTicketButton.addActionListener(e -> showCreateTicketDialog());
-        add(createTicketButton, "wrap");
+        if(apiClient.getAccount().hasRole("EMPLOYEE")) {
+            add(createTicketButton, "wrap");
+        }
 
         createTicketDialog = new TicketCreationDialog(apiClient, this::loadTickets, (JFrame) SwingUtilities.getWindowAncestor(this), "Create Ticket", true);
 

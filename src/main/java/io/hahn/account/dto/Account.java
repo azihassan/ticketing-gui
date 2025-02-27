@@ -23,6 +23,10 @@ public class Account {
     return this;
   }
 
+  public boolean hasRole(String role) {
+    return roles.stream().map(Role::getRole).anyMatch(r -> r.equals(role));
+  }
+
   /**
    * Get id
    * @return id

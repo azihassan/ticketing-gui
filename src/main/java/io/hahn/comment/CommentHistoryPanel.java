@@ -21,23 +21,32 @@ class CommentHistoryPanel extends JPanel {
         this.currentTicket = currentTicket;
         this.comment = comment;
         setLayout(new MigLayout());
-        setBorder(BorderFactory.createTitledBorder("Update comment " + comment.getId()));
+        //setPreferredSize(new Dimension(800, 600));
 
-        add(new CommentFormPanel(apiClient, currentTicket, () -> SwingUtilities.getWindowAncestor(this).dispose(), comment), "wrap");
+        if(apiClient.getAccount().getId().equals(comment.getCreatedBy().getId())) {
+            setBorder(BorderFactory.createTitledBorder("Update comment " + comment.getId()));
+            add(new CommentFormPanel(apiClient, currentTicket, () -> SwingUtilities.getWindowAncestor(this).dispose(), comment), "wrap");
+        } else {
+            setBorder(BorderFactory.createTitledBorder("Viewing comment " + comment.getId()));
+        }
 
         add(new JLabel("Comment history"), "wrap");
         var commentHistoryPanel = new JPanel(new MigLayout());
         var scrollPane = new JScrollPane(commentHistoryPanel);
-        scrollPane.setPreferredSize(new Dimension(100, 300));
+        scrollPane.setPreferredSize(new Dimension(520, 300));
         add(scrollPane, "growx");
 
         new Thread(() -> {
             try {
                 List<Comment> commentHistory = apiClient.getCommentHistory(comment.getTicketId(), comment.getId());
+                System.out.println("Loaded " + commentHistory.size() + " comments in edit history");
                 invokeLater(() -> {
                     for (Comment oldComment : commentHistory) {
                         this.addComment(oldComment, commentHistoryPanel);
                     }
+                    revalidate();
+                    repaint();
+                    System.out.println("Comment history scheduled for display");
                 });
             } catch (Exception e) {
                 invokeLater(() -> {
