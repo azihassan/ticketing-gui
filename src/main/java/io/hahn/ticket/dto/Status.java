@@ -1,25 +1,23 @@
-package io.hahn.dto;
+package io.hahn.ticket.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
- * Gets or Sets Category
+ * Gets or Sets Status
  */
 
-public enum Category {
+public enum Status {
   
-  NETWORK("NETWORK"),
+  NEW("NEW"),
   
-  HARDWARE("HARDWARE"),
+  IN_PROGRESS("IN_PROGRESS"),
   
-  SOFTWARE("SOFTWARE"),
-  
-  OTHER("OTHER");
+  RESOLVED("RESOLVED");
 
   private String value;
 
-  Category(String value) {
+  Status(String value) {
     this.value = value;
   }
 
@@ -34,8 +32,8 @@ public enum Category {
   }
 
   @JsonCreator
-  public static Category fromValue(String value) {
-    for (Category b : Category.values()) {
+  public static Status fromValue(String value) {
+    for (Status b : Status.values()) {
       if (b.value.equals(value)) {
         return b;
       }

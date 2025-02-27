@@ -1,4 +1,4 @@
-package io.hahn.dto;
+package io.hahn.ticket.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
@@ -6,31 +6,30 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import java.util.Objects;
 
 /**
- * UpdateCommentRequest
+ * UpdateTicketStatusRequest
  */
 
-@JsonTypeName("updateComment_request")
-public class UpdateCommentRequest {
+@JsonTypeName("updateTicketStatus_request")
+public class UpdateTicketStatusRequest {
 
-  private String text;
+  private Status status;
 
-  public UpdateCommentRequest text(String text) {
-    this.text = text;
+  public UpdateTicketStatusRequest status(Status status) {
+    this.status = status;
     return this;
   }
 
   /**
-   * Get text
-   * @return text
+   * Get status
+   * @return status
    */
-  
-  @JsonProperty("text")
-  public String getText() {
-    return text;
+  @JsonProperty("status")
+  public Status getStatus() {
+    return status;
   }
 
-  public void setText(String text) {
-    this.text = text;
+  public void setStatus(Status status) {
+    this.status = status;
   }
 
   @Override
@@ -41,20 +40,20 @@ public class UpdateCommentRequest {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    UpdateCommentRequest updateCommentRequest = (UpdateCommentRequest) o;
-    return Objects.equals(this.text, updateCommentRequest.text);
+    UpdateTicketStatusRequest updateTicketStatusRequest = (UpdateTicketStatusRequest) o;
+    return Objects.equals(this.status, updateTicketStatusRequest.status);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(text);
+    return Objects.hash(status);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class UpdateCommentRequest {\n");
-    sb.append("    text: ").append(toIndentedString(text)).append("\n");
+    sb.append("class UpdateTicketStatusRequest {\n");
+    sb.append("    status: ").append(toIndentedString(status)).append("\n");
     sb.append("}");
     return sb.toString();
   }

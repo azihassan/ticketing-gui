@@ -2,13 +2,18 @@ package io.hahn;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import io.hahn.dto.*;
+import io.hahn.comment.dto.Comment;
+import io.hahn.comment.dto.CommentPage;
+import io.hahn.account.dto.Account;
+import io.hahn.account.dto.Login;
+import io.hahn.ticket.dto.*;
 
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ApiClient {
@@ -18,6 +23,12 @@ public class ApiClient {
 
     private String rememberMeToken; // Store the authentication token
 
+    public Account getAccount() {
+        return account;
+    }
+
+    private Account account;
+
     public String getRememberMeToken() {
         return rememberMeToken;
     }
@@ -26,7 +37,7 @@ public class ApiClient {
         objectMapper.registerModule(new JavaTimeModule());
     }
 
-    public void login(String username, String password) throws Exception {
+    public Account login(String username, String password) throws Exception {
         Login loginRequest = new Login().username(username).password(password);
         String json = objectMapper.writeValueAsString(loginRequest);
 
@@ -38,7 +49,7 @@ public class ApiClient {
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        if (response.statusCode() == 204) {
+        if (response.statusCode() == 200) {
             this.rememberMeToken = response.headers()
                     .allValues("set-cookie")
                     .stream()
@@ -46,6 +57,8 @@ public class ApiClient {
                     .findFirst()
                     .orElseThrow();
             System.out.println("Login successful");
+            account = objectMapper.readValue(response.body(), Account.class);
+            return account;
         } else {
             throw new Exception("Login failed: " + response.statusCode());
         }
@@ -148,21 +161,43 @@ public class ApiClient {
         }
     }
 
-    public Comment addComment(Long id, CommentCreate dto) throws Exception {
-        String json = objectMapper.writeValueAsString(dto);
-
+    public List<Comment> getCommentHistory(Long ticketId, Long id) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:8080/tickets/" + id + "/comments")) // Replace with your URL
+                .uri(URI.create("http://localhost:8080/tickets/" + ticketId + "/comments/" + id + "/history")) // Replace with your URL
                 .header("Content-Type", "application/json")
                 .header("Cookie", rememberMeToken)
-                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        if (response.statusCode() != 200) {
+            throw new Exception("Error getting tickets: " + response.statusCode());
+        }
+        return Arrays.asList(objectMapper.readValue(response.body(), Comment[].class));
+    }
+
+    public Comment publishComment(Long ticketId, Comment comment) throws Exception {
+        String json = objectMapper.writeValueAsString(comment);
+
+        String method = "POST";
+        String url = "http://localhost:8080/tickets/" + ticketId + "/comments";
+        if(comment.getId() != null) {
+            url += "/" + comment.getId();
+            method = "PATCH";
+        }
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url)) // Replace with your URL
+                .header("Content-Type", "application/json")
+                .header("Cookie", rememberMeToken)
+                .method(method, HttpRequest.BodyPublishers.ofString(json))
                 .build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        if (response.statusCode() != 201) {
-            throw new Exception("Ticket creation failed: " + response.statusCode());
+        if (200 <= response.statusCode() && response.statusCode() < 400) {
+            return objectMapper.readValue(response.body(), Comment.class);
         }
-        return objectMapper.readValue(response.body(), Comment.class);
+        throw new Exception("Ticket creation failed: " + response.statusCode());
     }
 }

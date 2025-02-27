@@ -1,6 +1,10 @@
-package io.hahn;
+package io.hahn.ticket;
 
-import io.hahn.dto.*;
+import io.hahn.ApiClient;
+import io.hahn.ticket.dto.Category;
+import io.hahn.ticket.dto.Priority;
+import io.hahn.ticket.dto.Status;
+import io.hahn.ticket.dto.TicketCreate;
 
 import javax.swing.*;
 import java.awt.*;

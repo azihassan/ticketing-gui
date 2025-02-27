@@ -1,7 +1,8 @@
-package io.hahn;
+package io.hahn.ticket;
 
-import io.hahn.dto.Ticket;
-import io.hahn.dto.TicketPage;
+import io.hahn.ApiClient;
+import io.hahn.ticket.dto.Ticket;
+import io.hahn.ticket.dto.TicketPage;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;

@@ -1,4 +1,4 @@
-package io.hahn.dto;
+package io.hahn.comment.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

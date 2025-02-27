@@ -1,5 +1,7 @@
 package io.hahn;
 
+import io.hahn.ticket.TicketListPanel;
+
 import javax.swing.*;
 import java.awt.*;
 

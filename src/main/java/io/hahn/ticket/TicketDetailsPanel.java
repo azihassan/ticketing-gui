@@ -1,7 +1,9 @@
-package io.hahn;
+package io.hahn.ticket;
 
-import io.hahn.dto.Status;
-import io.hahn.dto.Ticket;
+import io.hahn.ApiClient;
+import io.hahn.comment.CommentAreaPanel;
+import io.hahn.ticket.dto.Status;
+import io.hahn.ticket.dto.Ticket;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;

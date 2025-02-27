@@ -1,6 +1,7 @@
-package io.hahn.dto;
+package io.hahn.comment.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.hahn.account.dto.Account;
 
 import java.time.LocalDateTime;
 import java.util.Objects;

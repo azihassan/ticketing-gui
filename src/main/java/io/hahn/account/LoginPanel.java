@@ -1,10 +1,12 @@
-package io.hahn;
+package io.hahn.account;
 
+import io.hahn.ApiClient;
+import io.hahn.MainApplicationScreen;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 
-class LoginPanel extends JPanel {
+public class LoginPanel extends JPanel {
 
     private final JTextField usernameField;
     private final JPasswordField passwordField;

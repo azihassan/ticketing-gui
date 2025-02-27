@@ -1,23 +1,25 @@
-package io.hahn.dto;
+package io.hahn.ticket.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
- * Gets or Sets Priority
+ * Gets or Sets Category
  */
 
-public enum Priority {
+public enum Category {
   
-  LOW("LOW"),
+  NETWORK("NETWORK"),
   
-  MEDIUM("MEDIUM"),
+  HARDWARE("HARDWARE"),
   
-  HIGH("HIGH");
+  SOFTWARE("SOFTWARE"),
+  
+  OTHER("OTHER");
 
   private String value;
 
-  Priority(String value) {
+  Category(String value) {
     this.value = value;
   }
 
@@ -32,8 +34,8 @@ public enum Priority {
   }
 
   @JsonCreator
-  public static Priority fromValue(String value) {
-    for (Priority b : Priority.values()) {
+  public static Category fromValue(String value) {
+    for (Category b : Category.values()) {
       if (b.value.equals(value)) {
         return b;
       }

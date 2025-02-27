@@ -1,4 +1,4 @@
-package io.hahn;
+package io.hahn.ticket;
 
 import com.formdev.flatlaf.util.StringUtils;
 

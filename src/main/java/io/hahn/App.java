@@ -1,6 +1,7 @@
 package io.hahn;
 
 import com.formdev.flatlaf.FlatLightLaf;
+import io.hahn.account.LoginPanel;
 
 import javax.swing.*;
 

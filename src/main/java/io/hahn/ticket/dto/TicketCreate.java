@@ -1,17 +1,14 @@
-package io.hahn.dto;
+package io.hahn.ticket.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
- * Ticket
+ * TicketCreate
  */
 
-public class Ticket {
-
-  private Long id = null;
+public class TicketCreate {
 
   private String title;
 
@@ -23,30 +20,22 @@ public class Ticket {
 
   private Status status;
 
-  private LocalDateTime createdAt;
-
-  private Account createdBy;
-
-  public Ticket id(Long id) {
-    this.id = id;
-    return this;
+  public TicketCreate() {
+    super();
   }
 
   /**
-   * Get id
-   * @return id
+   * Constructor with only required parameters
    */
-  
-  @JsonProperty("id")
-  public Long getId() {
-    return id;
+  public TicketCreate(String title, String description, Priority priority, Category category, Status status) {
+    this.title = title;
+    this.description = description;
+    this.priority = priority;
+    this.category = category;
+    this.status = status;
   }
 
-  public void setId(Long id) {
-    this.id = id;
-  }
-
-  public Ticket title(String title) {
+  public TicketCreate title(String title) {
     this.title = title;
     return this;
   }
@@ -55,7 +44,6 @@ public class Ticket {
    * Get title
    * @return title
    */
-  
   @JsonProperty("title")
   public String getTitle() {
     return title;
@@ -65,7 +53,7 @@ public class Ticket {
     this.title = title;
   }
 
-  public Ticket description(String description) {
+  public TicketCreate description(String description) {
     this.description = description;
     return this;
   }
@@ -74,7 +62,6 @@ public class Ticket {
    * Get description
    * @return description
    */
-  
   @JsonProperty("description")
   public String getDescription() {
     return description;
@@ -84,7 +71,7 @@ public class Ticket {
     this.description = description;
   }
 
-  public Ticket priority(Priority priority) {
+  public TicketCreate priority(Priority priority) {
     this.priority = priority;
     return this;
   }
@@ -102,7 +89,7 @@ public class Ticket {
     this.priority = priority;
   }
 
-  public Ticket category(Category category) {
+  public TicketCreate category(Category category) {
     this.category = category;
     return this;
   }
@@ -120,7 +107,7 @@ public class Ticket {
     this.category = category;
   }
 
-  public Ticket status(Status status) {
+  public TicketCreate status(Status status) {
     this.status = status;
     return this;
   }
@@ -138,42 +125,6 @@ public class Ticket {
     this.status = status;
   }
 
-  public Ticket createdAt(LocalDateTime createdAt) {
-    this.createdAt = createdAt;
-    return this;
-  }
-
-  /**
-   * Get createdAt
-   * @return createdAt
-   */
-  @JsonProperty("created_at")
-  public LocalDateTime getCreatedAt() {
-    return createdAt;
-  }
-
-  public void setCreatedAt(LocalDateTime createdAt) {
-    this.createdAt = createdAt;
-  }
-
-  public Ticket createdBy(Account createdBy) {
-    this.createdBy = createdBy;
-    return this;
-  }
-
-  /**
-   * Get createdBy
-   * @return createdBy
-   */
-  @JsonProperty("created_by")
-  public Account getCreatedBy() {
-    return createdBy;
-  }
-
-  public void setCreatedBy(Account createdBy) {
-    this.createdBy = createdBy;
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -182,34 +133,28 @@ public class Ticket {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Ticket ticket = (Ticket) o;
-    return Objects.equals(this.id, ticket.id) &&
-        Objects.equals(this.title, ticket.title) &&
-        Objects.equals(this.description, ticket.description) &&
-        Objects.equals(this.priority, ticket.priority) &&
-        Objects.equals(this.category, ticket.category) &&
-        Objects.equals(this.status, ticket.status) &&
-        Objects.equals(this.createdAt, ticket.createdAt) &&
-        Objects.equals(this.createdBy, ticket.createdBy);
+    TicketCreate ticketCreate = (TicketCreate) o;
+    return Objects.equals(this.title, ticketCreate.title) &&
+        Objects.equals(this.description, ticketCreate.description) &&
+        Objects.equals(this.priority, ticketCreate.priority) &&
+        Objects.equals(this.category, ticketCreate.category) &&
+        Objects.equals(this.status, ticketCreate.status);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, title, description, priority, category, status, createdAt, createdBy);
+    return Objects.hash(title, description, priority, category, status);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class Ticket {\n");
-    sb.append("    id: ").append(toIndentedString(id)).append("\n");
+    sb.append("class TicketCreate {\n");
     sb.append("    title: ").append(toIndentedString(title)).append("\n");
     sb.append("    description: ").append(toIndentedString(description)).append("\n");
     sb.append("    priority: ").append(toIndentedString(priority)).append("\n");
     sb.append("    category: ").append(toIndentedString(category)).append("\n");
     sb.append("    status: ").append(toIndentedString(status)).append("\n");
-    sb.append("    createdAt: ").append(toIndentedString(createdAt)).append("\n");
-    sb.append("    createdBy: ").append(toIndentedString(createdBy)).append("\n");
     sb.append("}");
     return sb.toString();
   }

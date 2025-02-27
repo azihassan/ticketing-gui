@@ -1,7 +1,9 @@
-package io.hahn.dto;
+package io.hahn.account.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -14,6 +16,8 @@ public class Account {
 
   private String username;
 
+  private List<Role> roles = new ArrayList<>();
+
   public Account id(Long id) {
     this.id = id;
     return this;
@@ -23,7 +27,7 @@ public class Account {
    * Get id
    * @return id
    */
-  
+
   @JsonProperty("id")
   public Long getId() {
     return id;
@@ -42,7 +46,7 @@ public class Account {
    * Get username
    * @return username
    */
-  
+
   @JsonProperty("username")
   public String getUsername() {
     return username;
@@ -50,6 +54,32 @@ public class Account {
 
   public void setUsername(String username) {
     this.username = username;
+  }
+
+  public Account roles(List<Role> roles) {
+    this.roles = roles;
+    return this;
+  }
+
+  public Account addRolesItem(Role rolesItem) {
+    if (this.roles == null) {
+      this.roles = new ArrayList<>();
+    }
+    this.roles.add(rolesItem);
+    return this;
+  }
+
+  /**
+   * Get roles
+   * @return roles
+   */
+  @JsonProperty("roles")
+  public List<Role> getRoles() {
+    return roles;
+  }
+
+  public void setRoles(List<Role> roles) {
+    this.roles = roles;
   }
 
   @Override
@@ -62,12 +92,13 @@ public class Account {
     }
     Account account = (Account) o;
     return Objects.equals(this.id, account.id) &&
-        Objects.equals(this.username, account.username);
+            Objects.equals(this.username, account.username) &&
+            Objects.equals(this.roles, account.roles);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, username);
+    return Objects.hash(id, username, roles);
   }
 
   @Override
@@ -76,6 +107,7 @@ public class Account {
     sb.append("class Account {\n");
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    username: ").append(toIndentedString(username)).append("\n");
+    sb.append("    roles: ").append(toIndentedString(roles)).append("\n");
     sb.append("}");
     return sb.toString();
   }
