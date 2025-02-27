@@ -26,5 +26,5 @@ jobs:
           name: New release of ticketing-gui ${{ github.ref_name }}
           draft: true
           prerelease: false
-          files: 'target/ticketing-gui-1.0-SNAPSHOT-jar-with-dependencies.jar'
+          files: 'target/ticketing-gui-0.0.2-SNAPSHOT-jar-with-dependencies.jar'
 
